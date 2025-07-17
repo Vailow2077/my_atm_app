@@ -5,9 +5,10 @@ connection = sqlite3.connect('my_database.db')  # Устанавливаем с�
 cursor = connection.cursor()
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Bank (
-id integer,
+user_id integer,
 log TEXT,
 password TEXT,
+history TEXT,
 balance integer
 )''')   # Создаем таблицу Bank
 
@@ -26,8 +27,8 @@ a = int(a)
 
 if a == 1:
     while True:
-        id = random.randint(100000, 999999)
-        cursor.execute('SELECT * FROM Bank WHERE id = ?', (id,)) # ищем id
+        user_id = random.randint(100000, 999999)
+        cursor.execute('SELECT * FROM Bank WHERE user_id = ?', (user_id,)) # ищем id
         result = cursor.fetchone()
         if result == None:
             break  # ID уникален, выходим из цикла
@@ -51,13 +52,14 @@ if a == 1:
     if b == password:
         print("done:")
 
-    cursor.execute('INSERT INTO Bank (id, password, log) VALUES (?, ?, ?)',(id ,password, log))  # Добавляем нового пользователя
+    cursor.execute('INSERT INTO Bank (user_id, password, log) VALUES (?, ?, ?)',(user_id ,password, log))  # Добавляем нового пользователя
     connection.commit()  # Сохраняем изменения
 
     balance = random.randint(1, 100000)
+    history = ""
     print ("login completed, your balance is:", balance)
 
-    cursor.execute('UPDATE Bank SET balance = ? WHERE ID = ?', (balance, id))  # Добавляем данные
+    cursor.execute('UPDATE Bank SET balance = ?, history = ? WHERE user_id = ?', (balance, history , user_id))  # Добавляем данные
     connection.commit() # Сохраняем изменения
 
 if a == 2:
@@ -66,11 +68,13 @@ if a == 2:
     print ("write your password:")
     password = input()
 
-    cursor.execute('SELECT balance FROM Bank WHERE log = ? AND password = ?', (log, password)) #ищем переменную баланс в таблице и даем ее результу
+    cursor.execute('SELECT balance, history, user_id FROM Bank WHERE log = ? AND password = ?', (log, password)) #ищем переменную баланс в таблице и даем ее результу
     result = cursor.fetchone() # результ
 
     if result is not None: # если результ найден то будет что то если нет то ошибка
         balance = result[0]
+        history = result[1]
+        user_id = result[2]
         print ("login completed, your balance is:", balance)
     else:
         print ("login don't done, id or password incorrect:")
@@ -111,8 +115,10 @@ while True:
         if b == password:
             print ("done:")
         balance = i + balance
+        history = " +" + str(i)
 
-        cursor.execute('UPDATE Bank SET balance = ? WHERE ID = ?', (balance, id))  # Добавляем данные
+        cursor.execute('UPDATE Bank SET balance = ? WHERE user_id = ?', (balance, user_id)) # Добавляем данные
+        cursor.execute('UPDATE Bank SET history = history || ? WHERE user_id = ?', (history, user_id))
         connection.commit()  # Сохраняем изменения
 
         print ("done:")
@@ -140,8 +146,10 @@ while True:
         if b == password:
             print("done:")
         balance = balance - f
+        history = " -" + str(f)
 
-        cursor.execute('UPDATE Bank SET balance = ? WHERE ID = ?', (balance, id))  # Добавляем данные
+        cursor.execute('UPDATE Bank SET balance = ? WHERE user_id = ?', (balance, user_id))  # Добавляем данные
+        cursor.execute('UPDATE Bank SET history = history || ? WHERE user_id = ?', (history, user_id))
         connection.commit()  # Сохраняем изменения
 
         print ("done:")
