@@ -6,6 +6,7 @@ cursor = connection.cursor()
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Bank (
 id integer,
+log TEXT,
 password TEXT,
 balance integer
 )''')   # Создаем таблицу Bank
@@ -30,7 +31,9 @@ if a == 1:
         result = cursor.fetchone()
         if result == None:
             break  # ID уникален, выходим из цикла
-    print  ("this is your id, you need to remember it,  you will use it to log in!!!", id)
+    print  ("creative your log-in:")
+    log = (input())
+    print ("your log-in is:", log)
     print ("creative your password:")
     password = (input())
     print ("your password is:", password)
@@ -48,7 +51,7 @@ if a == 1:
     if b == password:
         print("done:")
 
-    cursor.execute('INSERT INTO Bank (id, password) VALUES (?, ?)',(id ,password))  # Добавляем нового пользователя
+    cursor.execute('INSERT INTO Bank (id, password, log) VALUES (?, ?, ?)',(id ,password, log))  # Добавляем нового пользователя
     connection.commit()  # Сохраняем изменения
 
     balance = random.randint(1, 100000)
@@ -58,17 +61,12 @@ if a == 1:
     connection.commit() # Сохраняем изменения
 
 if a == 2:
-    print ("write your id:")
-    while True:
-        try:
-            id = int(input())
-            break
-        except ValueError:
-            print("invalid input:")
+    print ("write your log-in:")
+    log = input()
     print ("write your password:")
     password = input()
 
-    cursor.execute('SELECT balance FROM Bank WHERE id = ? AND password = ?', (id, password)) #ищем переменную баланс в таблице и даем ее результу
+    cursor.execute('SELECT balance FROM Bank WHERE log = ? AND password = ?', (log, password)) #ищем переменную баланс в таблице и даем ее результу
     result = cursor.fetchone() # результ
 
     if result is not None: # если результ найден то будет что то если нет то ошибка
