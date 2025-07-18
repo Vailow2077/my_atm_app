@@ -1,7 +1,8 @@
 import random
 import sqlite3
+import hashlib
 
-connection = sqlite3.connect('my_database.db')  # Устанавливаем соединение с базой данных
+connection = sqlite3.connect('bank_database.db')
 cursor = connection.cursor()
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Bank (
@@ -10,7 +11,7 @@ log TEXT,
 password TEXT,
 history TEXT,
 balance integer
-)''')   # Создаем таблицу Bank
+)''')
 
 print ("welcome to my bank! do you new user or old?")
 print ("1 - new:")
@@ -28,20 +29,23 @@ a = int(a)
 if a == 1:
     while True:
         user_id = random.randint(100000, 999999)
-        cursor.execute('SELECT * FROM Bank WHERE user_id = ?', (user_id,)) # ищем id
+        cursor.execute('SELECT * FROM Bank WHERE user_id = ?', (user_id, ))
         result = cursor.fetchone()
         if result == None:
-            break  # ID уникален, выходим из цикла
+            break
     print  ("creative your log-in:")
     log = (input())
     print ("your log-in is:", log)
     print ("creative your password:")
     password = (input())
     print ("your password is:", password)
+    encoded = password.encode('utf-8')
+    saved_hash = hashlib.sha256(encoded).hexdigest()
     print ("write your password:")
     b = (input())
+    input_hash = hashlib.sha256(b.encode()).hexdigest()
     x = 1
-    while b != password:
+    while input_hash != saved_hash:
         print ("write correct password:")
         b = (input())
         x += 1
@@ -49,26 +53,38 @@ if a == 1:
         if x == 5:
             print ("you write incorrect password. try again!")
             raise SystemExit
-    if b == password:
+    if input_hash == saved_hash:
         print("done:")
 
-    cursor.execute('INSERT INTO Bank (user_id, password, log) VALUES (?, ?, ?)',(user_id ,password, log))  # Добавляем нового пользователя
-    connection.commit()  # Сохраняем изменения
+    cursor.execute('INSERT INTO Bank (user_id, password, log) VALUES (?, ?, ?)',(user_id ,saved_hash, log))
+    connection.commit()
 
     balance = random.randint(1, 100000)
     history = ""
     print ("login completed, your balance is:", balance)
 
-    cursor.execute('UPDATE Bank SET balance = ?, history = ? WHERE user_id = ?', (balance, history , user_id))  # Добавляем данные
-    connection.commit() # Сохраняем изменения
+    cursor.execute('UPDATE Bank SET balance = ?, history = ? WHERE user_id = ?', (balance, history , user_id))
+    connection.commit()
 
 if a == 2:
     print ("write your log-in:")
     log = input()
-    print ("write your password:")
-    password = input()
 
-    cursor.execute('SELECT balance, history, user_id FROM Bank WHERE log = ? AND password = ?', (log, password)) #ищем переменную баланс в таблице и даем ее результу
+    cursor.execute('SELECT password FROM Bank WHERE log = ?', (log, ))
+    result = cursor.fetchone()
+
+    if result is not None:
+        saved_hash = result[0]
+        print("log-in correct, write your password:")
+    else:
+        print("log-in incorrect:")
+        connection.close()
+        raise SystemExit
+    print ("write your password:")
+    b = input()
+    input_hash = hashlib.sha256(b.encode()).hexdigest()
+
+    cursor.execute('SELECT balance, history, user_id FROM Bank WHERE log = ? AND password = ?', (log, saved_hash)) #ищем переменную баланс в таблице и даем ее результу
     result = cursor.fetchone() # результ
 
     if result is not None: # если результ найден то будет что то если нет то ошибка
@@ -77,7 +93,7 @@ if a == 2:
         user_id = result[2]
         print ("login completed, your balance is:", balance)
     else:
-        print ("login don't done, id or password incorrect:")
+        print ("login don't done, log-in or password incorrect:")
         connection.close()
         raise SystemExit
 
@@ -109,10 +125,11 @@ while True:
                 print("incorrect input:")
         print ("write your password:")
         b = (input())
-        while b != password:
+        input_hash = hashlib.sha256(b.encode()).hexdigest()
+        while input_hash != saved_hash:
             print('write correct password:')
             b = (input())
-        if b == password:
+        if input_hash == saved_hash:
             print ("done:")
         balance = i + balance
         history = " +" + str(i)
@@ -140,10 +157,11 @@ while True:
                 print("incorrect input:")
         print ("write your password:")
         b = (input())
-        while b != password:
+        input_hash = hashlib.sha256(b.encode()).hexdigest()
+        while input_hash != saved_hash:
             print('write correct password:')
             b = (input())
-        if b == password:
+        if input_hash == saved_hash:
             print("done:")
         balance = balance - f
         history = " -" + str(f)
