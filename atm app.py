@@ -1,6 +1,8 @@
 import random
-import sqlite3
-import hashlib
+import sqlite3          #импотрируем таблицу
+import hashlib          #импортируем кодирование пароля
+import time                     #для время
+from datetime import datetime   #для время
 
 connection = sqlite3.connect('bank_database.db')
 cursor = connection.cursor()
@@ -18,7 +20,7 @@ last_name TEXT
 )''')
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Operations (
-user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+user_id integer,
 balance integer,
 history TEXT,
 timestamp integer
@@ -112,7 +114,7 @@ if choice_1 == 1:
 
     balance = random.randint(1, 100000)
     history = ""
-    timestamp = 0
+    timestamp = 0                   #время в секундах с 01.01.1970
     print ("login completed, your balance is:", balance)
 
     cursor.execute('UPDATE Connect SET password = ?, log_in = ? WHERE user_id = ?',(saved_hash, log_in, user_id))
@@ -127,7 +129,7 @@ if choice_1 == 2:
     log_in = input()
 
     cursor.execute('SELECT password FROM Connect WHERE log_in = ?', (log_in, ))
-    result = cursor.fetchone()                      #достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
+    result = cursor.fetchone()        #достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
     if result is not None:
         saved_hash = result[0]
         print("log-in correct, write your password:")
@@ -206,55 +208,50 @@ while True:
         if input_hash == saved_hash:
             print ("done:")
 
-
-
-
-
-
-
         balance = choice_7 + balance
         history = " +" + str(choice_7)
-
-        cursor.execute('UPDATE Bank SET balance = ? WHERE user_id = ?', (balance, user_id)) # Добавляем данные
-        cursor.execute('UPDATE Bank SET history = history || ? WHERE user_id = ?', (history, user_id))
-        connection.commit()  # Сохраняем изменения
+        sec = int(time.time())                    # Получаем текущий timestamp (в секундах)
+        real_time = datetime.fromtimestamp(sec)           # Преобразуем в читаемую дату и время
+        #print(real_time.strftime("%Y-%m-%d %H:%M:%S"))   #вывод времени
+        cursor.execute("INSERT INTO Operations (user_id, balance, history, timestamp) VALUES (?, ?, ?, ?)",(user_id, balance, history, sec))
+        connection.commit()
         print ("done:")
         print ("your balance is:", balance)
 
-##    if d == 2:
-##        print ("how money you want to remove?")
-##        while True:
-##            try:
-##                f = int(input())
-##                while f > balance:
-##                    print('incorrect:')
-##                    f = int(input())
-##                while f <= 0:
-##                    print('incorrect input:')
-##                    f = int(input())
-##                break
-##            except ValueError:
-##                print("incorrect input:")
-##        print ("write your password:")
-##        b = (input())
-##        input_hash = hashlib.sha256(b.encode()).hexdigest()
-##        while input_hash != saved_hash:
-##            print('write correct password:')
-##            b = (input())
-##        if input_hash == saved_hash:
-##            print("done:")
-##        balance = balance - f
-##        history = " -" + str(f)
-##
-##        cursor.execute('UPDATE Bank SET balance = ? WHERE user_id = ?', (balance, user_id))  # Добавляем данные
-##        cursor.execute('UPDATE Bank SET history = history || ? WHERE user_id = ?', (history, user_id))
-##        connection.commit()  # Сохраняем изменения
-##
-##        print ("done:")
-##        print("your balance is:", balance)
-##
-##    if d == 3:
-##        print ("ok, thank you for use our bank! come back!")
-##        connection.close()
-##
-##        break
+    if choice_6 == 2:
+        print ("how money you want to remove?")
+        while True:
+            try:
+                choice_9 = int(input())
+                while choice_9 > balance:
+                    print('incorrect:')
+                    choice_9 = int(input())
+                while choice_9 <= 0:
+                    print('incorrect input:')
+                    choice_9 = int(input())
+                break
+            except ValueError:
+                print("incorrect input:")
+
+        print ("write your password:")
+        choice_8 = (input())
+        input_hash = hashlib.sha256(choice_8.encode()).hexdigest()
+        while input_hash != saved_hash:
+            print('write correct password:')
+            choice_8 = (input())
+        if input_hash == saved_hash:
+            print("done:")
+
+        balance = balance - choice_9
+        history = " -" + str(choice_9)
+        sec = int(time.time())                   # Получаем текущий timestamp (в секундах)
+        real_time = datetime.fromtimestamp(sec)  # Преобразуем в читаемую дату и время
+        cursor.execute("INSERT INTO Operations (user_id, balance, history, timestamp) VALUES (?, ?, ?, ?)",(user_id, balance, history, sec))
+        connection.commit()
+        print ("done:")
+        print("your balance is:", balance)
+
+    if choice_6 == 3:
+        print ("ok, thank you for use our bank! come back!")
+        connection.close()
+        break
