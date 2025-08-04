@@ -177,12 +177,10 @@ if choice_1 == 2:
         connection.close()
         raise SystemExit
 
-    cursor.execute('SELECT balance_new, timestamp, history  FROM Operations WHERE user_id = ?', (user_id,))  # ищем переменную в таблице и даем ее результу
+    cursor.execute('SELECT balance_new FROM Operations WHERE user_id = ? ORDER BY TIMESTAMP DESC LIMIT 1', (user_id, ))             # ищем переменную в таблице и даем ее результу
     result = cursor.fetchone()  # результ
     if result is not None:  # если результ найден то будет что то если нет то ошибка
         balance = result[0]
-        timestamp = result[1]
-        history = result[2]
     else:
         print("login don't done, log-in or password incorrect:")
         connection.close()
@@ -190,22 +188,22 @@ if choice_1 == 2:
 
     print("login completed, your balance is:", balance)
 
-##while True:
-##    print ("what you want do?")
-##    print ("1 - to replenish:")
-##    print ("2 - to remove:")
-##    print ("3 - to see history:")
-##    print ("4 - money transfer:")
-##    print ("5 - nothing:")
-##    list_2 = ["1", "2", "3", "4", "5"]
-##    while True:
-##        choice_6 = input()
-##        if choice_6 in list_2:
-##            break
-##        else:
-##            print("invalid input:")
-##    choice_6 = int(choice_6)
-##
+while True:
+    print ("what you want do?")
+    print ("1 - to replenish:")
+    print ("2 - to remove:")
+    print ("3 - to see history:")
+    print ("4 - money transfer:")
+    print ("5 - nothing:")
+    list_2 = ["1", "2", "3", "4", "5"]
+    while True:
+        choice_6 = input()
+        if choice_6 in list_2:
+            break
+        else:
+            print("invalid input:")
+    choice_6 = int(choice_6)
+
 ##    if choice_6 == 1:
 ##        print ("how money you want to replenish?")
 ##        while True:
