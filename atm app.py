@@ -163,7 +163,6 @@ if choice_1 == 2:
     if result is not None: # если результ найден то будет что то если нет то ошибка
         user_id = result[0]
     else:
-        print("login don't done, log-in or password incorrect:")
         connection.close()
         raise SystemExit
 
@@ -173,7 +172,6 @@ if choice_1 == 2:
         first_name = result[0]
         last_name = result[1]
     else:
-        print("login don't done, log-in or password incorrect:")
         connection.close()
         raise SystemExit
 
@@ -182,7 +180,6 @@ if choice_1 == 2:
     if result is not None:  # если результ найден то будет что то если нет то ошибка
         balance = result[0]
     else:
-        print("login don't done, log-in or password incorrect:")
         connection.close()
         raise SystemExit
 
@@ -347,47 +344,63 @@ while True:
                     print ("time:", real_time, "operations:", history)
 
     if choice_6 == 4:
-##        print ("to whom do you want to transfer money(write his/her log_in):")
-##        while True:
-##            log_in_input = input()
-##            cursor.execute('SELECT log_in FROM Connect WHERE log_in = ?', (log_in_input, ))
-##            result = cursor.fetchone()  # достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
-##            if result is not None:
-##                log_in_2 = result[0]
-##                break
-##            else:
-##                print("log-in incorrect:")
-##        cursor.execute('SELECT BALANCE')
-##
-##        print ("user found:")
-##        print ("how much money do you want transfer:")
-##        while True:
-##            try:
-##                choice_11 = int(input())
-##                while choice_11 > balance:
-##                    print('incorrect input:')
-##                    choice_11 = int(input())
-##                while choice_11 <= 0:
-##                    print('incorrect input:')
-##                    choice_11 = int(input())
-##                break
-##            except ValueError:
-##                print("incorrect input:")
-##
-##        print ("write your password:")
-##        choice_12 = (input())
-##        input_hash = hashlib.sha256(choice_12.encode()).hexdigest()
-##        while input_hash != saved_hash:
-##            print('write correct password:')
-##            choice_12 = (input())
-##        if input_hash == saved_hash:
-##            print("done:")
-##
-##
-##
-##
-##
-##
+        print ("to whom do you want to transfer money(write his/her log_in):")
+        while True:
+            log_in_input = input()
+            cursor.execute('SELECT log_in, user_id FROM Connect WHERE log_in = ?', (log_in_input,))
+            result = cursor.fetchone()  # достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
+            if result is not None:
+                log_in_2 = result[0]
+                user_id_2 = result[1]
+                break
+            else:
+                print("log-in incorrect:")
+        cursor.execute('SELECT balance_new FROM operations WHERE user_id = ? ORDER BY TIMESTAMP DESC LIMIT 1', (user_id_2, ))
+        result = cursor.fetchone()  # результ
+        if result is not None:  # если результ найден то будет что то если нет то ошибка
+            balance_2 = result[0]
+        else:
+            connection.close()
+            raise SystemExit
+        print ("user found:")
+
+        print ("how much money do you want transfer:")
+        while True:
+            try:
+                choice_11 = int(input())
+                while choice_11 > balance:
+                    print('incorrect input:')
+                    choice_11 = int(input())
+                while choice_11 <= 0:
+                    print('incorrect input:')
+                    choice_11 = int(input())
+                break
+            except ValueError:
+                print("incorrect input:")
+
+        print ("write your password:")
+        choice_12 = (input())
+        input_hash = hashlib.sha256(choice_12.encode()).hexdigest()
+        while input_hash != saved_hash:
+            print('write correct password:')
+            choice_12 = (input())
+            input_hash = hashlib.sha256(choice_12.encode()).hexdigest()
+        if input_hash == saved_hash:
+            print("done:")
+
+        balance = balance - choice_11
+        balance_2 = balance_2 + choice_11
+        history = " -" + str(choice_11)
+        history_2 = " +" + str(choice_11)
+        sec = int(time.time())  # Получаем текущий timestamp (в секундах)
+        real_time = datetime.fromtimestamp(sec)  # Преобразуем в читаемую дату и время
+        cursor.execute("INSERT INTO Operations (user_id, balance_new, history, timestamp) VALUES (?, ?, ?, ?)",(user_id, balance, history, sec))
+        connection.commit()
+        cursor.execute("INSERT INTO Operations (user_id, balance_new, history, timestamp) VALUES (?, ?, ?, ?)",(user_id_2, balance_2, history_2, sec))
+        connection.commit()
+        print("done:")
+        print("your balance is:", balance)
+
     if choice_6 == 5:
         print ("ok, thank you for use our bank! come back!")
         connection.close()
