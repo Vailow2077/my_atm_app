@@ -101,7 +101,12 @@ if choice_1 == 1:
     user_id = add_user(log_in)        #задаем айди
 
     print ("creative your password:")
-    password = (input())
+    while True:
+        password = input()
+        if len(password) <= 3:
+            print("your password is to short:")
+        else:
+            break
     print ("your password is:", password)
     encoded = password.encode('utf-8')                      #задаем строку в байты для кодирования
     saved_hash = hashlib.sha256(encoded).hexdigest()        #вычесляем с помощью библиотеки hashlib sha 256 хеш битов(способ кодирования) и hexdigest возвращает 16-ричный код
