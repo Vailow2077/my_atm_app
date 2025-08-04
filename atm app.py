@@ -270,83 +270,83 @@ while True:
         print ("done:")
         print("your balance is:", balance)
 
-##    if choice_6 == 3:
-##        print ("how do you want to view history:")
-##        print ("1 - last 10 operations:")
-##        print ("2 - start with date:")
-##        print ("3 - between dates:")
-##        list_3 = ["1", "2", "3"]
-##        while True:
-##            choice_10 = input()
-##            if choice_10 in list_3:
-##                break
-##            else:
-##                print("invalid input:")
-##        choice_10 = int(choice_10)
-##
-##        if choice_10 == 1:
-##            cursor.execute("SELECT * FROM Operations WHERE user_id = ? AND history != '' AND timestamp != 0 ORDER BY timestamp DESC LIMIT 10", (user_id, ))     #desk от новых к старым, ask от старых к новым, limit 10
-##            rows = cursor.fetchall()                #получаем результат всех строк
-##            if rows:
-##                print ("last 10 operations:")
-##                for row in rows:
-##                    user_id, balance, history, timestamp = row              #делим переменные
-##                    real_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M")            #переводим время из timestamp
-##                    print("time:", real_time, "operations:", history)
-##            else:
-##                print("operations dont found for this user:")
-##
-##        if choice_10 == 2:
-##            print ("write start date (in formate Y-M-D):")
-##            while True:
-##                start_date = input()
-##                try:
-##                    start = int(datetime.strptime(start_date, "%Y-%m-%d").timestamp())
-##                    break
-##                except ValueError:
-##                    print("incorrect input. use Y-M-D:")
-##
-##            cursor.execute("""SELECT * FROM Operations WHERE user_id = ? AND history != '' AND timestamp >= ? ORDER BY timestamp ASC """,(user_id, start))
-##            rows = cursor.fetchall()
-##            if not rows:
-##                print("operations is not exist:")
-##            else:
-##                print("operations with", start_date,":")
-##                for row in rows:
-##                    user_id, balance, history, timestamp = row
-##                    real_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M')
-##                    print ("time:", real_time, "operations:", history)
-##
-##        if choice_10 == 3:
-##            print ("write start date (in formate Y-M-D):")
-##            while True:
-##                start_date = input()
-##                try:
-##                    start = int(datetime.strptime(start_date, "%Y-%m-%d").timestamp())
-##                    break
-##                except ValueError:
-##                    print("incorrect input. use Y-M-D:")
-##            print ("write end date (in formate Y-M-D):")
-##            while True:
-##                end_date = input()
-##                try:
-##                    end = int(datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59).timestamp())
-##                    break
-##                except ValueError:
-##                    print("incorrect input. use Y-M-D:")
-##
-##            cursor.execute("""SELECT * FROM Operations WHERE user_id = ? AND history != '' AND timestamp BETWEEN ? AND ? ORDER BY timestamp ASC """, (user_id, start, end))
-##            rows = cursor.fetchall()
-##            if not rows:
-##                print("operations is not exist:")
-##            else:
-##                print("operations from", start_date, "to", end_date,":")
-##                for row in rows:
-##                    user_id, balance, history, timestamp = row
-##                    real_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M')
-##                    print ("time:", real_time, "operations:", history)
-##
-##    if choice_6 == 4:
+    if choice_6 == 3:
+        print ("how do you want to view history:")
+        print ("1 - last 10 operations:")
+        print ("2 - start with date:")
+        print ("3 - between dates:")
+        list_3 = ["1", "2", "3"]
+        while True:
+            choice_10 = input()
+            if choice_10 in list_3:
+                break
+            else:
+                print("invalid input:")
+        choice_10 = int(choice_10)
+
+        if choice_10 == 1:
+            cursor.execute("SELECT * FROM Operations WHERE user_id = ? AND history != '' AND timestamp != 0 ORDER BY timestamp DESC LIMIT 10", (user_id, ))     #desk от новых к старым, ask от старых к новым, limit 10
+            rows = cursor.fetchall()                #получаем результат всех строк
+            if rows:
+                print ("last 10 operations:")
+                for row in rows:
+                    user_id, balance, history, timestamp = row              #делим переменные
+                    real_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M")            #переводим время из timestamp
+                    print("time:", real_time, "operations:", history)
+            else:
+                print("operations dont found for this user:")
+
+        if choice_10 == 2:
+            print ("write start date (in formate Y-M-D):")
+            while True:
+                start_date = input()
+                try:
+                    start = int(datetime.strptime(start_date, "%Y-%m-%d").timestamp())
+                    break
+                except ValueError:
+                    print("incorrect input. use Y-M-D:")
+
+            cursor.execute("""SELECT * FROM Operations WHERE user_id = ? AND history != '' AND timestamp >= ? ORDER BY timestamp ASC """,(user_id, start))
+            rows = cursor.fetchall()
+            if not rows:
+                print("operations is not exist:")
+            else:
+                print("operations with", start_date,":")
+                for row in rows:
+                    user_id, balance, history, timestamp = row
+                    real_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M')
+                    print ("time:", real_time, "operations:", history)
+
+        if choice_10 == 3:
+            print ("write start date (in formate Y-M-D):")
+            while True:
+                start_date = input()
+                try:
+                    start = int(datetime.strptime(start_date, "%Y-%m-%d").timestamp())
+                    break
+                except ValueError:
+                    print("incorrect input. use Y-M-D:")
+            print ("write end date (in formate Y-M-D):")
+            while True:
+                end_date = input()
+                try:
+                    end = int(datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59).timestamp())
+                    break
+                except ValueError:
+                    print("incorrect input. use Y-M-D:")
+
+            cursor.execute("""SELECT * FROM Operations WHERE user_id = ? AND history != '' AND timestamp BETWEEN ? AND ? ORDER BY timestamp ASC """, (user_id, start, end))
+            rows = cursor.fetchall()
+            if not rows:
+                print("operations is not exist:")
+            else:
+                print("operations from", start_date, "to", end_date,":")
+                for row in rows:
+                    user_id, balance, history, timestamp = row
+                    real_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M')
+                    print ("time:", real_time, "operations:", history)
+
+    if choice_6 == 4:
 ##        print ("to whom do you want to transfer money(write his/her log_in):")
 ##        while True:
 ##            log_in_input = input()
