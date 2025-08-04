@@ -136,61 +136,60 @@ if choice_1 == 1:
     cursor.execute("INSERT INTO Operations (user_id, history, balance_new, timestamp) VALUES (?, ?, ?, ?)", (user_id, history, balance, timestamp))
     connection.commit()
 
-##if choice_1 == 2:
-##    print ("write your log-in:")
-##    log_in = input()
-##
-##    cursor.execute('SELECT password FROM Connect WHERE log_in = ?', (log_in, ))
-##    result = cursor.fetchone()        #достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
-##    if result is not None:
-##        saved_hash = result[0]
-##        print("log-in correct, write your password:")
-##    else:
-##        print("log-in incorrect:")
-##        connection.close()
-##        raise SystemExit
-##    print ("write your password:")
-##    choice_5 = input()
-##    input_hash = hashlib.sha256(choice_5.encode()).hexdigest()     #опять шифруем пароль
-##    while input_hash != saved_hash:
-##        print('write correct password:')
-##        choice_5 = (input())
-##        input_hash = hashlib.sha256(choice_5.encode()).hexdigest()
-##    if input_hash == saved_hash:
-##        print("done:")
-##
-##    cursor.execute('SELECT user_id FROM Connect WHERE log_in = ? AND password = ?', (log_in, saved_hash,)) #ищем переменную в таблице и даем ее результу
-##    result = cursor.fetchone() # результ
-##    if result is not None: # если результ найден то будет что то если нет то ошибка
-##        user_id = result[0]
-##    else:
-##        print("login don't done, log-in or password incorrect:")
-##        connection.close()
-##        raise SystemExit
-##
-##    cursor.execute('SELECT first_name, last_name FROM Information WHERE user_id = ?', (user_id, ))  # ищем переменную в таблице и даем ее результу
-##    result = cursor.fetchone()  # результ
-##    if result is not None:  # если результ найден то будет что то если нет то ошибка
-##        first_name = result[0]
-##        last_name = result[1]
-##    else:
-##        print("login don't done, log-in or password incorrect:")
-##        connection.close()
-##        raise SystemExit
-##
-##    cursor.execute('SELECT balance_new, timestamp, history  FROM Operations WHERE user_id = ?', (user_id,))  # ищем переменную в таблице и даем ее результу
-##    result = cursor.fetchone()  # результ
-##    if result is not None:  # если результ найден то будет что то если нет то ошибка
-##        balance = result[0]
-##        timestamp = result[1]
-##        history = result[2]
-##    else:
-##        print("login don't done, log-in or password incorrect:")
-##        connection.close()
-##        raise SystemExit
-##
-##    print("login completed, your balance is:", balance)
-##
+if choice_1 == 2:
+    print ("write your log-in:")
+    log_in = input()
+    cursor.execute('SELECT password FROM Connect WHERE log_in = ?', (log_in, ))
+    result = cursor.fetchone()        #достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
+    if result is not None:
+        saved_hash = result[0]
+        print("log-in correct, write your password:")
+    else:
+        print("log-in incorrect:")
+        connection.close()
+        raise SystemExit
+    print ("write your password:")
+    choice_5 = input()
+    input_hash = hashlib.sha256(choice_5.encode()).hexdigest()     #опять шифруем пароль
+    while input_hash != saved_hash:
+        print('write correct password:')
+        choice_5 = (input())
+        input_hash = hashlib.sha256(choice_5.encode()).hexdigest()
+    if input_hash == saved_hash:
+        print("done:")
+
+    cursor.execute('SELECT user_id FROM Connect WHERE log_in = ? AND password = ?', (log_in, saved_hash,)) #ищем переменную в таблице и даем ее результу
+    result = cursor.fetchone() # результ
+    if result is not None: # если результ найден то будет что то если нет то ошибка
+        user_id = result[0]
+    else:
+        print("login don't done, log-in or password incorrect:")
+        connection.close()
+        raise SystemExit
+
+    cursor.execute('SELECT first_name, last_name FROM Information WHERE user_id = ?', (user_id, ))  # ищем переменную в таблице и даем ее результу
+    result = cursor.fetchone()  # результ
+    if result is not None:  # если результ найден то будет что то если нет то ошибка
+        first_name = result[0]
+        last_name = result[1]
+    else:
+        print("login don't done, log-in or password incorrect:")
+        connection.close()
+        raise SystemExit
+
+    cursor.execute('SELECT balance_new, timestamp, history  FROM Operations WHERE user_id = ?', (user_id,))  # ищем переменную в таблице и даем ее результу
+    result = cursor.fetchone()  # результ
+    if result is not None:  # если результ найден то будет что то если нет то ошибка
+        balance = result[0]
+        timestamp = result[1]
+        history = result[2]
+    else:
+        print("login don't done, log-in or password incorrect:")
+        connection.close()
+        raise SystemExit
+
+    print("login completed, your balance is:", balance)
+
 ##while True:
 ##    print ("what you want do?")
 ##    print ("1 - to replenish:")
