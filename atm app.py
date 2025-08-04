@@ -89,7 +89,14 @@ if choice_1 == 1:
         return cursor.lastrowid       #создаем лог ин и возвращаем последние id для правильной маркировки
 
     print  ("creative your log-in:")
-    log_in = (input())
+    while True:
+        log_in = input()
+        cursor.execute('SELECT log_in FROM Connect WHERE log_in = ?', (log_in,))
+        result = cursor.fetchone()  # достаем одну строчку и даем ее результу, если результ не ноль то там значение если ноль то ничего не нашел
+        if result is not None:
+            print("log-in already busy:")
+        else:
+            break
     print ("your log-in is:", log_in)
     user_id = add_user(log_in)        #задаем айди
 
