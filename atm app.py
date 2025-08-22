@@ -7,6 +7,8 @@ from datetime import datetime   #для время
 connection = sqlite3.connect('bank_database.db')
 cursor = connection.cursor()
 
+cursor.execute("PRAGMA foreign_keys = ON;")
+
 cursor.execute('''CREATE TABLE IF NOT EXISTS Connect (
 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 log_in TEXT,
@@ -14,16 +16,18 @@ password TEXT
 )''')
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Information (
-user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+user_id integer,
 first_name TEXT,
-last_name TEXT
+last_name TEXT,
+FOREIGN KEY (user_id) REFERENCES Connect(user_id)
 )''')
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Operations (
 user_id integer,
 balance_new integer,
 history TEXT,
-timestamp integer
+timestamp integer,
+FOREIGN KEY (user_id) REFERENCES Connect(user_id)
 )''')
 
 print ("welcome to my bank! do you new user or old?")
